@@ -22,32 +22,152 @@ cur= Session.connect_to_psql()
 #TO GET ALL BLOCKS (LIMIT SET TO 10)
 @app.route('/v1.0/all_blocks/', methods=['GET'])
 def get_all_block():
-    print("Here")
     cur.execute("""SELECT * FROM blocks LIMIT 10""")
-    columns = ('block_number', 'block_hash', 'parent_hash', 'difficulty', 'gas_used', 'miner', 'timestamp', 'sha3uncles', 'extra_data',
-        'gas_limit', 'uncle_count', 'transaction_count')
+    # columns = ('block_number', 'block_hash', 'parent_hash', 'difficulty', 'gas_used', 'miner', 'timestamp', 'sha3uncles', 'extra_data',
+    #     'gas_limit', 'uncle_count', 'transaction_count')
+    # for row in cur.fetchall():
+    #     results.append(dict(zip(columns, row)))
+    # print(json.dumps(results, indent=2, default=json_serial))
+
     results = []
 
-    for row in cur.fetchall():
-        results.append(dict(zip(columns, row)))
-    # print(json.dumps(results, indent=2, default=json_serial))
+    columns = cur.description
+
+    for value in cur.fetchall():
+    	tmp = {}
+    	for (index,column) in enumerate(value):
+        	tmp[columns[index][0]] = column
+    	results.append(tmp)
+
+    resJSON = json.dumps(results, indent=2, default=json_serial)
+    return resJSON
+
+
+#TO GET LATEST BLOCK'S BLOCKNUMBER
+@app.route('/v1.0/latest_block_number/', methods=['GET'])
+def get_latest_block():
+    cur.execute("""SELECT block_number FROM blocks WHERE block_number = (SELECT max(block_number) from blocks)""")
+    results = []
+
+    columns = cur.description
+
+    for value in cur.fetchall():
+    	tmp = {}
+    	for (index,column) in enumerate(value):
+        	tmp[columns[index][0]] = column
+    	results.append(tmp)
 
     resJSON = json.dumps(results, indent=2, default=json_serial)
     return resJSON
 
 
 #TO GET A BLOCK BY ITS BLOCK NUMBER
-@app.route('/v1.0/block/<int:blockno>/', methods=['GET'])
+@app.route('/v1.0/block_by_number/<int:blockno>/', methods=['GET'])
 def get_block_by_blockno(blockno):
 
     cur.execute("""SELECT * FROM blocks WHERE block_number="""+str(blockno))
-    columns = ('block_number', 'block_hash', 'parent_hash', 'difficulty', 'gas_used', 'miner', 'timestamp', 'sha3uncles', 'extra_data',
-        'gas_limit', 'uncle_count', 'transaction_count')
+    
     results = []
 
-    for row in cur.fetchall():
-        results.append(dict(zip(columns, row)))
-    # print(json.dumps(results, indent=2, default=json_serial))
+    columns = cur.description
+
+    for value in cur.fetchall():
+    	tmp = {}
+    	for (index,column) in enumerate(value):
+        	tmp[columns[index][0]] = column
+    	results.append(tmp)
+
+    resJSON = json.dumps(results, indent=2, default=json_serial)
+    return resJSON
+
+#TO GET A BLOCK BY ITS BLOCK HASH
+@app.route('/v1.0/block_by_hash/<string:block_hash>/', methods=['GET'])
+def get_block_by_blockhash(block_hash):
+
+    cur.execute("""SELECT * FROM blocks WHERE block_hash="""+ "'" + block_hash + "'")
+    
+    results = []
+
+    columns = cur.description
+
+    for value in cur.fetchall():
+    	tmp = {}
+    	for (index,column) in enumerate(value):
+        	tmp[columns[index][0]] = column
+    	results.append(tmp)
+
+    resJSON = json.dumps(results, indent=2, default=json_serial)
+    return resJSON
+
+#TO GET A BLOCK TRANSACTION COUNT BY ITS BLOCK HASH
+@app.route('/v1.0/block_transcount_by_hash/<string:block_hash>/', methods=['GET'])
+def get_block_transcount_by_blockhash(block_hash):
+
+    cur.execute("""SELECT transaction_count FROM blocks WHERE block_hash="""+ "'" + block_hash + "'")
+    results = []
+
+    columns = cur.description
+
+    for value in cur.fetchall():
+    	tmp = {}
+    	for (index,column) in enumerate(value):
+        	tmp[columns[index][0]] = column
+    	results.append(tmp)
+
+    resJSON = json.dumps(results, indent=2, default=json_serial)
+    return resJSON
+
+#TO GET A BLOCK TRANSACTION COUNT BY ITS BLOCK NUMBER
+@app.route('/v1.0/block_transcount_by_number/<int:blockno>/', methods=['GET'])
+def get_block_transcount_by_blockno(blockno):
+
+    cur.execute("""SELECT transaction_count FROM blocks WHERE block_number="""+ str(blockno))
+    results = []
+
+    columns = cur.description
+
+    for value in cur.fetchall():
+    	tmp = {}
+    	for (index,column) in enumerate(value):
+        	tmp[columns[index][0]] = column
+    	results.append(tmp)
+
+    resJSON = json.dumps(results, indent=2, default=json_serial)
+    return resJSON
+
+
+#TO GET A BLOCK UNCLE COUNT BY ITS BLOCK HASH
+@app.route('/v1.0/block_unclecount_by_hash/<string:block_hash>/', methods=['GET'])
+def get_block_unclecount_by_blockhash(block_hash):
+
+    cur.execute("""SELECT uncle_count FROM blocks WHERE block_hash="""+ "'" + block_hash + "'")
+    results = []
+
+    columns = cur.description
+
+    for value in cur.fetchall():
+    	tmp = {}
+    	for (index,column) in enumerate(value):
+        	tmp[columns[index][0]] = column
+    	results.append(tmp)
+
+    resJSON = json.dumps(results, indent=2, default=json_serial)
+    return resJSON
+
+#TO GET A BLOCK UNCLE COUNT BY ITS BLOCK NUMBER
+@app.route('/v1.0/block_unclecount_by_number/<int:blockno>/', methods=['GET'])
+def get_block_unclecount_by_blockno(blockno):
+
+    cur.execute("""SELECT uncle_count FROM blocks WHERE block_number="""+ str(blockno))
+    results = []
+
+    columns = cur.description
+
+    for value in cur.fetchall():
+    	tmp = {}
+    	for (index,column) in enumerate(value):
+        	tmp[columns[index][0]] = column
+    	results.append(tmp)
 
     resJSON = json.dumps(results, indent=2, default=json_serial)
     return resJSON
@@ -67,6 +187,8 @@ def get_transaction_by_hash(hash1):
 
     resJSON = json.dumps(results, indent=2, default=json_serial)
     return resJSON
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
