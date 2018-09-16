@@ -44,8 +44,8 @@ def get_all_block():
 
 
 #TO GET LATEST BLOCK'S BLOCKNUMBER
-@app.route('/v1.0/latest_block_number/', methods=['GET'])
-def get_latest_block():
+@app.route('/v1.0/current_blockNumber/', methods=['GET'])
+def eth_blockNumber():
     cur.execute("""SELECT block_number FROM blocks WHERE block_number = (SELECT max(block_number) from blocks)""")
     results = []
 
@@ -62,8 +62,8 @@ def get_latest_block():
 
 
 #TO GET A BLOCK BY ITS BLOCK NUMBER
-@app.route('/v1.0/block_by_number/<int:blockno>/', methods=['GET'])
-def get_block_by_blockno(blockno):
+@app.route('/v1.0/getBlockByNumber/<int:blockno>/', methods=['GET'])
+def eth_getBlockByNumber(blockno):
 
     cur.execute("""SELECT * FROM blocks WHERE block_number="""+str(blockno))
     
@@ -81,8 +81,8 @@ def get_block_by_blockno(blockno):
     return resJSON
 
 #TO GET A BLOCK BY ITS BLOCK HASH
-@app.route('/v1.0/block_by_hash/<string:block_hash>/', methods=['GET'])
-def get_block_by_blockhash(block_hash):
+@app.route('/v1.0/getBlockByHash/<string:block_hash>/', methods=['GET'])
+def eth_getBlockByHash(block_hash):
 
     cur.execute("""SELECT * FROM blocks WHERE block_hash="""+ "'" + block_hash + "'")
     
@@ -100,8 +100,8 @@ def get_block_by_blockhash(block_hash):
     return resJSON
 
 #TO GET A BLOCK TRANSACTION COUNT BY ITS BLOCK HASH
-@app.route('/v1.0/block_transcount_by_hash/<string:block_hash>/', methods=['GET'])
-def get_block_transcount_by_blockhash(block_hash):
+@app.route('/v1.0/getTransactionCountByHash/<string:block_hash>/', methods=['GET'])
+def eth_getBlockTransactionCountByHash(block_hash):
 
     cur.execute("""SELECT transaction_count FROM blocks WHERE block_hash="""+ "'" + block_hash + "'")
     results = []
@@ -118,8 +118,8 @@ def get_block_transcount_by_blockhash(block_hash):
     return resJSON
 
 #TO GET A BLOCK TRANSACTION COUNT BY ITS BLOCK NUMBER
-@app.route('/v1.0/block_transcount_by_number/<int:blockno>/', methods=['GET'])
-def get_block_transcount_by_blockno(blockno):
+@app.route('/v1.0/getTransactionCountByNumber/<int:blockno>/', methods=['GET'])
+def eth_getBlockTransactionCountByNumber(blockno):
 
     cur.execute("""SELECT transaction_count FROM blocks WHERE block_number="""+ str(blockno))
     results = []
@@ -137,8 +137,8 @@ def get_block_transcount_by_blockno(blockno):
 
 
 #TO GET A BLOCK UNCLE COUNT BY ITS BLOCK HASH
-@app.route('/v1.0/block_unclecount_by_hash/<string:block_hash>/', methods=['GET'])
-def get_block_unclecount_by_blockhash(block_hash):
+@app.route('/v1.0/getUncleCountByBlockHash/<string:block_hash>/', methods=['GET'])
+def eth_getUncleCountByBlockHash(block_hash):
 
     cur.execute("""SELECT uncle_count FROM blocks WHERE block_hash="""+ "'" + block_hash + "'")
     results = []
@@ -155,8 +155,8 @@ def get_block_unclecount_by_blockhash(block_hash):
     return resJSON
 
 #TO GET A BLOCK UNCLE COUNT BY ITS BLOCK NUMBER
-@app.route('/v1.0/block_unclecount_by_number/<int:blockno>/', methods=['GET'])
-def get_block_unclecount_by_blockno(blockno):
+@app.route('/v1.0/getUncleCountByBlockNumber/<int:blockno>/', methods=['GET'])
+def eth_getUncleCountByBlockNumber(blockno):
 
     cur.execute("""SELECT uncle_count FROM blocks WHERE block_number="""+ str(blockno))
     results = []
@@ -173,8 +173,24 @@ def get_block_unclecount_by_blockno(blockno):
     return resJSON
 
 #TO GET A TRANSACTION BY ITS HASH
-@app.route('/v1.0/transaction/<string:hash1>/', methods=['GET'])
-def get_transaction_by_hash(hash1):
+@app.route('/v1.0/getTransactionByHash/<string:hash1>/', methods=['GET'])
+def eth_getTransactionByHash(hash1):
+
+    cur.execute("""SELECT * FROM transactions WHERE transaction_hash="""+ "'" + hash1 + "'")
+    columns = ('transaction_hash', 'block_number', 'nonce', 'sender', 'receiver', 'start_gas', 'value', 'data', 'gas_price',
+        'timestamp', 'transaction_index')
+    results = []
+
+    for row in cur.fetchall():
+        results.append(dict(zip(columns, row)))
+    # print(json.dumps(results, indent=2, default=json_serial))
+
+    resJSON = json.dumps(results, indent=2, default=json_serial)
+    return resJSON
+
+#TO GET A TRANSACTION BY ITS HASH
+@app.route('/v1.0/getTransactionByBlockHashAndIndex/<string:hash1>/<int:index>/', methods=['GET'])
+def eth_getTransactionByBlockHashAndIndex(hash1, index):
 
     cur.execute("""SELECT * FROM transactions WHERE transaction_hash="""+ "'" + hash1 + "'")
     columns = ('transaction_hash', 'block_number', 'nonce', 'sender', 'receiver', 'start_gas', 'value', 'data', 'gas_price',
