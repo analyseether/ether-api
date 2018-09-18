@@ -72,5 +72,4 @@ Date: Tue, 18 Sep 2018 11:46:58 GMT
   {
     "block_number": 5000100
   }
-
-`̀``
+```
