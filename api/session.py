@@ -1,9 +1,9 @@
 import psycopg2
 from flask import Flask
-from settings import DefaultSettings
+from .settings import DefaultSettings
 
 app = Flask(__name__)
-app.config.from_object('settings.DefaultSettings')
+app.config.from_object(DefaultSettings)
 
 class Session():
 

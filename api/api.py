@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 import simplejson as json
 import psycopg2
 from datetime import date, datetime
-from session import Session
+from .session import Session
 
 app = Flask(__name__)
 
@@ -66,7 +66,7 @@ def eth_blockNumber():
 def eth_getBlockByNumber(blockno):
 
     cur.execute("""SELECT * FROM blocks WHERE block_number="""+str(blockno))
-    
+
     results = []
 
     columns = cur.description
@@ -85,7 +85,7 @@ def eth_getBlockByNumber(blockno):
 def eth_getBlockByHash(block_hash):
 
     cur.execute("""SELECT * FROM blocks WHERE block_hash="""+ "'" + block_hash + "'")
-    
+
     results = []
 
     columns = cur.description
