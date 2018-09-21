@@ -16,12 +16,12 @@ host=str(app.config['POSTGRES_HOST'])
 port=str(app.config['POSTGRES_PORT'])
 db=str(app.config['POSTGRES_DB'])
 
-engine = create_engine('postgresql://' + user +':' + password +'@' + host +  ':' + port + '/' + db)
-
+url = 'postgresql://{}:{}@{}:{}/{}'
+url = url.format(user, password, host, port, db)
 
 class Session():
     def __init__(self):
-        self.engine = create_engine('postgresql://' + user +':' + password +'@' + host +  ':' + port + '/' + db)
+        self.engine = create_engine(url, client_encoding='utf8', isolation_level="AUTOCOMMIT")
 
     def connect_to_psql(self):
         Ses = sessionmaker(bind=self.engine)

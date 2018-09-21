@@ -1,23 +1,18 @@
 from flask import Flask, jsonify
 import simplejson as json
 import psycopg2
-from datetime import date, datetime
 from sqlalchemy.sql.expression import func
 from sqlalchemy.exc import NoInspectionAvailable
+from datetime import date, datetime
 
 if __package__ is None or __package__ == '':
   from sessions import Session
+  from utils import json_serial
 else:
   from .sessions import Session
+  from .utils import json_serial
 
 app = Flask(__name__)
-
-def json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
-
-    if isinstance(obj, (datetime, date)):
-        return obj.isoformat()
-    raise TypeError ("Type %s not serializable" % type(obj))
 
 
 
@@ -30,14 +25,6 @@ Blocks=ss.get_table_object('blocks')
 Transactions=ss.get_table_object('transactions')
 Receipts=ss.get_table_object('receipts')
 Uncles=ss.get_table_object('uncles')
-
-
-def json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
-
-    if isinstance(obj, (datetime, date)):
-        return obj.isoformat()
-    raise TypeError ("Type %s not serializable" % type(obj))
 
 
 #TO GET ALL BLOCKS (LIMIT SET TO 10)
