@@ -22,6 +22,8 @@ before_script:
   - export FLASK_APP="api/api.py"
   - export FLASK_DEBUG=1
 
-script:
-  - flask run
+script: echo "Build Done"
+
+after_script:
+  - flask run & APP_PID=$!
   - curl -i http://127.0.0.1:5000/v1.0/current_blockNumber/
