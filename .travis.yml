@@ -1,5 +1,5 @@
 # Config file for automatic testing at travis-ci.org
-sudo: false 
+sudo: true 
 branches:
   only:
     - master
@@ -9,8 +9,8 @@ python:
   - 3.6
 install: 
   - pip install -r requirements.txt
-  - apt-get install postgresql
-  - postgres createuser -s -P -e $USER
+  # - apt-get install postgresql
+  - sudo -u postgres createuser -s -P -e $USER
   - createdb ether_sql
   - psql ether_sql < tests/ether_sql_test.sql
 before_script:
