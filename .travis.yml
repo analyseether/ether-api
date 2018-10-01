@@ -21,5 +21,17 @@ before_script:
 script: echo "Build Done"
 
 after_script:
-  - flask run
-  - curl -i http://127.0.0.1:5000/v1.0/current_blockNumber/
+  - |
+    python api/api.py &
+    APP_PID=$!
+  - curl -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip > ngrok.zip
+  - unzip ngrok.zip
+  - ./ngrok http 5000 > /dev/null &
+
+  # sleep to allow ngrok to initialize
+  - sleep 2
+
+  # extract the ngrok url
+  - NGROK_URL=$(curl -s localhost:4040/api/tunnels/command_line | jq --raw-output .public_url)
+  - curl -i $NGROK_URL/v1.0/current_blockNumber/
+  - kill $APP_PID
