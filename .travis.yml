@@ -17,7 +17,7 @@ install:
   # - psql ether_sql < tests/ether_sql_test.sql
 before_script:
   - psql -c 'create database ether_sql;' -U postgres
-  - psql -c "CREATE USER " + $USER + " WITH PASSWORD 'develop';" -U postgres
+  - psql -c "CREATE USER root WITH PASSWORD 'develop';" -U postgres
   - psql ether_sql < tests/ether_sql_test.sql
   - export FLASK_APP="api/api.py"
   - export FLASK_DEBUG=1
