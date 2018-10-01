@@ -1,0 +1,20 @@
+# Config file for automatic testing at travis-ci.org
+sudo: true 
+branches:
+  only:
+    - master
+    - test
+language: python
+python:
+  - 3.6
+install: 
+  - pip install -r requirements.txt
+  - sudo apt-get install postgresql
+  - sudo -u postgres createuser -s -P -e $USER
+  - createdb ether_sql
+  - psql ether_sql < tests/ether_sql_test.sql
+before_script:
+  - export FLASK_APP="api/api.py"
+  - export FLASK_DEBUG=1
+
+script: flask run
