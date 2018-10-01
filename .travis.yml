@@ -18,9 +18,7 @@ before_script:
   - export FLASK_APP="api/api.py"
   - export FLASK_DEBUG=1
 
-script: echo "Build Done"
-
-after_script:
+script:
   - |
     python api/api.py &
     APP_PID=$!
