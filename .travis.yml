@@ -19,7 +19,9 @@ before_script:
   - export FLASK_DEBUG=1
 
 script:
-  - python tests/test_api.py
+  - cd tests
+  - python test_api.py
+  - cd ..
   - |
     python api/api.py &
     APP_PID=$!
