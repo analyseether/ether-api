@@ -19,6 +19,7 @@ before_script:
   - export FLASK_DEBUG=1
 
 script:
+  - python tests/test_api.py
   - |
     python api/api.py &
     APP_PID=$!
@@ -32,4 +33,18 @@ script:
   # extract the ngrok url
   - NGROK_URL=$(curl -s localhost:4040/api/tunnels/command_line | jq --raw-output .public_url)
   - curl -i $NGROK_URL/v1.0/current_blockNumber/
+  - curl -i $NGROK_URL/v1.0/getBlockByNumber/5000000/
+  - curl -i $NGROK_URL/v1.0/getBlockByHash/0x7d5a4369273c723454ac137f48a4f142b097aa2779464e6505f1b1c5e37b5382/
+  - curl -i $NGROK_URL/v1.0/getTransactionCountByHash/0x7d5a4369273c723454ac137f48a4f142b097aa2779464e6505f1b1c5e37b5382/
+  - curl -i $NGROK_URL/v1.0/getTransactionCountByNumber/5000000/
+  - curl -i $NGROK_URL/v1.0/getUncleCountByBlockHash/0x7d5a4369273c723454ac137f48a4f142b097aa2779464e6505f1b1c5e37b5382/
+  - curl -i $NGROK_URL/v1.0/getUncleCountByBlockNumber/5000000/
+
+  - curl -i $NGROK_URL/v1.0/getTransactionByHash/0xf29819bc5b114851494262c25728e697bd1b679646be9a5e4d12431868057b39/
+  - curl -i $NGROK_URL/v1.0/getTransactionByBlockHashAndIndex/0x7d5a4369273c723454ac137f48a4f142b097aa2779464e6505f1b1c5e37b5382/2/
+  - curl -i $NGROK_URL/v1.0/getTransactionByBlockNumberAndIndex/5000000/3/
+
+  - curl -i $NGROK_URL/v1.0/getReceipt/0x569c5b35f203ca6db6e2cec44bceba756fad513384e2bd79c06a8c0181273379/
+  - curl -i $NGROK_URL/v1.0/getUncleByHash/0xb31db2ee05835be4fd025ae16eecaa55b670c1b67a009969a7912bea39f9951b/
+
   - kill $APP_PID
