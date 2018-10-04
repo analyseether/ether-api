@@ -22,7 +22,7 @@ def test_links():
     test_eth_getTransactionByBlockNumberAndIndex(5000000, 3)
 
     test_eth_getTransactionReceipt('0x569c5b35f203ca6db6e2cec44bceba756fad513384e2bd79c06a8c0181273379')
-    test_eth_getUncleByUncleHash('0xb31db2ee05835be4fd025ae16eecaa55b670c1b67a009969a7912bea39f9951b')
+    #test_eth_getUncleByUncleHash('0xb31db2ee05835be4fd025ae16eecaa55b670c1b67a009969a7912bea39f9951b')
 
 @pytest.fixture
 def test_get_all_blocks():
